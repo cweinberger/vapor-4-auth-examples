@@ -10,8 +10,16 @@ func routes(_ app: Application) throws {
         return "Hello, world!"
     }
 
+    let userProtectedRoutes = app
+        .grouped(UserAuthenticator().middleware())
+        .grouped(User.guardMiddleware()
+    )
+
     let todoController = TodoController()
-    app.get("todos", use: todoController.index)
-    app.post("todos", use: todoController.create)
-    app.on(.DELETE, "todos", ":todoID", use: todoController.delete)
+    userProtectedRoutes.get("todos", use: todoController.index)
+    userProtectedRoutes.post("todos", use: todoController.create)
+    userProtectedRoutes.on(.DELETE, "todos", ":todoID", use: todoController.delete)
+
+    let userController = UserController()
+    try app.register(collection: userController)
 }

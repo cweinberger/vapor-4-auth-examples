@@ -12,6 +12,7 @@ public func configure(_ app: Application) throws {
 
     // Configure migrations
     app.migrations.add(CreateTodo())
+    app.migrations.add(User.Migration())
     
     try routes(app)
 }

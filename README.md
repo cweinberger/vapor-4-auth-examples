@@ -1,20 +1,19 @@
-<p align="center">
-    <img src="https://user-images.githubusercontent.com/1342803/36623515-7293b4ec-18d3-11e8-85ab-4e2f8fb38fbd.png" width="320" alt="API Template">
-    <br>
-    <br>
-    <a href="http://docs.vapor.codes/3.0/">
-        <img src="http://img.shields.io/badge/read_the-docs-2196f3.svg" alt="Documentation">
-    </a>
-    <a href="https://discord.gg/vapor">
-        <img src="https://img.shields.io/discord/431917998102675485.svg" alt="Team Chat">
-    </a>
-    <a href="LICENSE">
-        <img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License">
-    </a>
-    <a href="https://circleci.com/gh/vapor/api-template">
-        <img src="https://circleci.com/gh/vapor/api-template.svg?style=shield" alt="Continuous Integration">
-    </a>
-    <a href="https://swift.org">
-        <img src="http://img.shields.io/badge/swift-5-brightgreen.svg" alt="Swift 5">
-    </a>
-</p>
+# Basic Authenticator example
+
+This example shows how to implement Basic authentication yourself. It is based on the vapor-4 api template.
+
+## Features
+
+- all `Todo` related endpoints are basic auth protected
+- you can create new users as well as fetching single or all users
+- I have added `PublicUser` to outline that you should not use database entities in your APIs (for reasons such as decoupling or control over data you want to expost)
+
+## Added files
+
+- `UserAuthenticator.swift`: Implements basic auth for our User, checking if the `username` matches our `email` and the `password` matches our `passwordHash`
+- `UserController.swift`: Provides routes to create/get users.
+- `User.swift`: Our user model; conforms to `Authenticatable`
+
+## Modified files
+
+- `routes.swift`: Added a protected route for  `Todo` related endpoints; `UserAuthenticator` checks if we have an authenticated user (and returns it or `nil`). `GuardMiddleware` ensures that you can only pass if a user has been added to the requests (by `UserAuthenticator().middleware()`) 
