@@ -2,11 +2,15 @@
 
 This example shows how to implement Basic authentication yourself. It is based on the vapor-4 api template.
 
-## Features
+By using `UserAuthenticator().middleware()` as a global middleware (added in `configure.swift`), we will try to fetch a user for all requests.
+I have added two ways of protecting routes:
+a) using a protectedRoute with a `GuardMiddleware()` for Todo-related endpoints (see `routes.swift`)
+b) using `req.auth.has(User.self)` in `UserController.swift` to protect single endpoints (as we dont want to protect the register user endpoint).
 
-- all `Todo` related endpoints are basic auth protected
-- you can create new users as well as fetching single or all users
-- I have added `PublicUser` to outline that you should not use database entities in your APIs (for reasons such as decoupling or control over data you want to expost)
+## Principles
+
+- `UserAuthenticator().middleware()`  try to fetch a user for any given request and attach the fetched user to the request object
+- `GuardMiddleware()` simply checks if a `Authenticatable` model is attached to the request and throws if not.
 
 ## Added files
 
@@ -16,4 +20,5 @@ This example shows how to implement Basic authentication yourself. It is based o
 
 ## Modified files
 
-- `routes.swift`: Added a protected route for  `Todo` related endpoints; `UserAuthenticator` checks if we have an authenticated user (and returns it or `nil`). `GuardMiddleware` ensures that you can only pass if a user has been added to the requests (by `UserAuthenticator().middleware()`) 
+- `routes.swift`: Added a protected route for  `Todo` related endpoints using `GuardMiddleware`.
+- `configure.swift`: Added the `UserAuthenticator().middleware()` to the global middlewares.

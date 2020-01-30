@@ -3,12 +3,14 @@ import Vapor
 
 struct UserController {
     func getAll(req: Request) throws -> EventLoopFuture<[User.PublicUser]> {
+        guard req.auth.has(User.self) else { throw Abort(.unauthorized) }
         return User.query(on: req.db).all().flatMapThrowing { users in
             return try users.map(User.PublicUser.init)
         }
     }
 
     func getSingle(req: Request) throws -> EventLoopFuture<User.PublicUser> {
+        guard req.auth.has(User.self) else { throw Abort(.unauthorized) }
         return User.find(req.parameters.get("userID"), on: req.db)
             .unwrap(or: Abort(.notFound))
             .flatMapThrowing { try User.PublicUser($0) }

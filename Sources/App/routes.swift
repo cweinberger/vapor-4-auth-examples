@@ -11,7 +11,6 @@ func routes(_ app: Application) throws {
     }
 
     let userProtectedRoutes = app
-        .grouped(UserAuthenticator().middleware())
         .grouped(User.guardMiddleware()
     )
 
